@@ -1,11 +1,11 @@
 const WHATSAPP="51953887354"; // cambia por tu número con código de país
-// Precio: el combinado con maracuyá cuesta 11 en total. Cámbialo aquí
-const PRECIO_COMBINADO=11,PRECIO_BEBIDA=0;
-// Tu único producto: el combinado, que viene con maracuyá.
+// Precios: el combinado cuesta 11 y la gaseosa 1 (en el carrito va junto: 12). Cámbialos aquí
+const PRECIO_COMBINADO=11,PRECIO_BEBIDA=1;
+// Tu único producto: el combinado, que viene con gaseosa.
 // Formato: [nombre en el carrito, descripción, precio, favorito, foto del combinado, texto, bebida, descripción de la bebida, foto de la bebida]
 // Los mismos nombres y precios van en api/_menu.js
 const MENU={"Combinado":[
-["Combinado con maracuyá","Ceviche de perico con tallarines al ají amarillo y maracuyá.",PRECIO_COMBINADO+PRECIO_BEBIDA,1,"combinado.jpg","Con maracuyá","Maracuyá","Jugo de maracuyá, fresco y con su toque ácido.","maracuya.jpg"]]};
+["Combinado con gaseosa","Ceviche de perico con tallarines al ají amarillo y gaseosa.",PRECIO_COMBINADO+PRECIO_BEBIDA,1,"combinado.jpg","Con gaseosa","Gaseosa","Gaseosa bien helada para acompañar tu combinado.",""]]};
 const $=s=>document.querySelector(s);
 let cart={};try{cart=JSON.parse(localStorage.getItem("punto-cart")||"{}")}catch(e){}
 const save=()=>{try{localStorage.setItem("punto-cart",JSON.stringify(cart))}catch(e){}};
@@ -19,7 +19,7 @@ bg.innerHTML=h+'<div class="wave w2"></div><div class="wave"></div>';document.bo
 /* Carta por página */
 const g=$("#grid");
 if(g&&g.classList.contains("full")){const c=g.dataset.cats,L=MENU[c];
- g.innerHTML=`<article class="show"><img class="showpic" src="${L[0][4]}" alt="${g.dataset.title}" onerror="this.remove()"><div class="showtxt"><h1>${g.dataset.title}</h1><p>${g.dataset.desc}</p><button class="cta" id="addc">🛒 Agregar al carrito · S/ ${PRECIO_COMBINADO+PRECIO_BEBIDA}</button><div><a class="back" href="#ingredientes">Ver ingredientes ↓</a></div></div></article>`;
+ g.innerHTML=`<article class="show"><img class="showpic" src="${L[0][4]}" alt="${g.dataset.title}" onerror="this.remove()"><div class="showtxt"><h1>${g.dataset.title}</h1><p>${g.dataset.desc}</p><button class="cta" id="addc">🛒 Agregar al carrito · S/ ${PRECIO_COMBINADO+PRECIO_BEBIDA}</button><p class="dnote" style="margin:14px 0 0;font-size:18px;font-weight:800">🥤 Incluye gaseosa: combinado S/ ${PRECIO_COMBINADO} + gaseosa S/ ${PRECIO_BEBIDA}<br><span style="color:var(--gold)">⭐ Gaseosa a S/ ${PRECIO_BEBIDA} solo por preventa</span></p><div><a class="back" href="#ingredientes">Ver ingredientes ↓</a></div></div></article>`;
  $("#addc").onclick=()=>{const d=L[0];cart[d[0]]=cart[d[0]]||{n:0,p:d[2]};cart[d[0]].n++;save();upd();
   toast.textContent="✔ Agregado: "+d[0];toast.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove("on"),1800);bar.classList.remove("bump");void bar.offsetWidth;bar.classList.add("bump")}}
 else if(g){g.innerHTML=g.dataset.cats.split(",").map(c=>(g.dataset.cats.includes(",")?`<h2 class="sub" style="grid-column:1/-1">${c}</h2>`:"")+MENU[c].map((d,i)=>`<article class="card prod${d[3]?" hot":""}"><img class="pic" src="${d[4]}" alt="${d[0]}" loading="lazy" onerror="this.remove()"><div class="pbody"><h3>${d[0]}</h3><p>${d[1]}</p><button class="add buy" data-c="${c}" data-i="${i}" aria-label="Agregar ${d[0]} al carrito, S/ ${d[2]}">🛒 Agregar · S/ ${d[2]}</button></div></article>`).join("")).join("");
