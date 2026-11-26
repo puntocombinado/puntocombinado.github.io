@@ -36,8 +36,8 @@ function upd(){const k=Object.keys(cart),n=k.reduce((a,x)=>a+cart[x].n,0),t=k.re
 $("#arrow").onclick=()=>{open=!open;upd()};
 $("#clist").onclick=e=>{const b=e.target.closest(".q");if(!b)return;const x=b.dataset.x;cart[x].n+=+b.dataset.d;if(cart[x].n<=0)delete cart[x];save();upd()};
 $("#clr").onclick=()=>{cart={};save();upd()};
-$("#send").onclick=()=>{const k=Object.keys(cart),t=k.reduce((a,x)=>a+cart[x].n*cart[x].p,0);const txt="Hola Punto Combinado, quiero pedir:\n"+k.map(x=>`- ${cart[x].n} x ${x}`).join("\n")+`\nTotal: S/ ${t}`;window.open(`https://wa.me/953887354?text=${encodeURIComponent(txt)}`,"_blank")};
-const wa=$("#wa");if(wa)wa.href=`https://wa.me/953887354`;upd();
+$("#send").onclick=()=>{const k=Object.keys(cart),t=k.reduce((a,x)=>a+cart[x].n*cart[x].p,0);const txt="Hola Punto Combinado, quiero pedir:\n"+k.map(x=>`- ${cart[x].n} x ${x}`).join("\n")+`\nTotal: S/ ${t}`;window.open(`https://wa.me/51953887354?text=${encodeURIComponent(txt)}`,"_blank")};
+const wa=$("#wa");if(wa)wa.href=`https://wa.me/51953887354`;upd();
 
 /* Pantalla de carga (solo inicio, una vez por visita) */
 const L=$("#loader");
@@ -59,7 +59,7 @@ if(g)g.addEventListener("click",e=>{const b=e.target.closest(".add");if(!b)retur
  toast.textContent="✔ Agregado: "+MENU[b.dataset.c][b.dataset.i][0];toast.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove("on"),1600);
  bar.classList.remove("bump");void bar.offsetWidth;bar.classList.add("bump")});
 // botón flotante de WhatsApp
-const fab=document.createElement("a");fab.className="wafab";fab.target="_blank";fab.rel="noopener";fab.setAttribute("aria-label","Escribir por WhatsApp");fab.href=`https://wa.me/953887354`;fab.textContent="💬";document.body.append(fab);
+const fab=document.createElement("a");fab.className="wafab";fab.target="_blank";fab.rel="noopener";fab.setAttribute("aria-label","Escribir por WhatsApp");fab.href=`https://wa.me/51953887354`;fab.textContent="💬";document.body.append(fab);
 // abierto / cerrado (hora de Lima, 11:00 a 17:00)
 const op=$("#open");if(op){const hr=+new Date().toLocaleString("en-US",{timeZone:"America/Lima",hour:"numeric",hour12:false})%24;
  if(hr>=11&&hr<17)op.textContent="Abierto ahora · hasta las 5:00 pm";else{op.textContent="Cerrado · abrimos a las 11:00 am";op.classList.add("off")}}
@@ -77,15 +77,13 @@ const PAGO_EFECTIVO=false;
 const YAPE_NUMBER="953887354",YAPE_NAME=""; // cambia por tu número y nombre de Yape
 function yape(j,txt){cart={};save();upd();cf.innerHTML=`<h3>Paga con Yape</h3><p>${j.numero?`Pedido <b>${j.numero}</b> · `:""}Total <b>S/ ${j.total}</b></p><img class="yqr" src="yape-qr.png" alt="Código QR de Yape de Punto Combinado"><p id="ynum"></p><p>Escanea el QR, paga el monto exacto y toca el botón para enviarnos tu pedido y la captura del pago por WhatsApp.</p><a class="btn" id="ywa" target="_blank" rel="noopener">Enviar pedido y captura por WhatsApp</a><button type="button" class="btn red" onclick="location.reload()">Listo</button>`;
  $("#ynum").textContent=(YAPE_NAME||YAPE_NUMBER)?`Yape: ${[YAPE_NAME,YAPE_NUMBER].filter(Boolean).join(" · ")}`:"";
- $("#ywa").href=`https://wa.me/953887354?text=`+encodeURIComponent(`Hola, ya pagué por Yape${j.numero?" el pedido "+j.numero:""}.\n`+txt+`\nTe envío la captura.`)}
+ $("#ywa").href=`https://wa.me/51953887354?text=`+encodeURIComponent(`Hola, ya pagué por Yape${j.numero?" el pedido "+j.numero:""}.\n`+txt+`\nTe envío la captura.`)}
 /* ===== Checkout: datos del cliente, PagoEfectivo y aviso al dueño ===== */
 const co=document.createElement("div");co.id="co";co.hidden=true;
 co.innerHTML=`<form class="cobox" id="coform"><h3>Tu pedido</h3><div id="cosum"></div>
 <label>Nombre<input name="nombre" required maxlength="60" autocomplete="name"></label>
-<label>Celular<input name="telefono" required inputmode="tel" pattern="[0-9 +]{9,15}" autocomplete="tel"></label>
 <label>Correo (solo para PagoEfectivo)<input name="email" type="email" required autocomplete="email"></label>
-<label>Entrega<select name="entrega"><option value="recojo">Recojo en el local</option><option value="delivery">Delivery</option></select></label>
-<label id="dirl" hidden>Dirección<input name="direccion" maxlength="120"></label>
+<input type="hidden" name="entrega" value="recojo"><p><b>Entrega:</b> recojo en el local</p>
 <label>Forma de pago<select name="metodo"><option value="pagoefectivo">PagoEfectivo (código CIP)</option><option value="yape">Yape (escaneas el QR)</option></select></label>
 <p id="comsg" role="alert"></p>
 <div class="coact"><button type="button" class="btn" id="cocancel">Volver</button><button class="btn red" id="cook">Confirmar pedido</button></div></form>`;
@@ -94,7 +92,6 @@ const cf=$("#coform"),cmsg=$("#comsg");
 if(!PAGO_EFECTIVO){cf.metodo.querySelector('option[value="pagoefectivo"]').remove();cf.metodo.value="yape";cf.metodo.closest("label").hidden=true;cf.email.closest("label").hidden=true;cf.email.required=false}
 $("#send").onclick=()=>{const k=Object.keys(cart);$("#cosum").textContent=k.map(x=>`${cart[x].n} x ${x}`).join(" · ")+" — Total S/ "+k.reduce((a,x)=>a+cart[x].n*cart[x].p,0);cmsg.textContent="";co.hidden=false;cf.nombre.focus()};
 $("#cocancel").onclick=()=>co.hidden=true;
-cf.entrega.onchange=()=>{$("#dirl").hidden=cf.entrega.value!=="delivery";cf.direccion.required=!$("#dirl").hidden};
 cf.metodo.onchange=()=>{cf.email.required=cf.metodo.value==="pagoefectivo"};
 function listo(t){cart={};save();upd();cf.innerHTML='<h3>¡Gracias!</h3><p id="cot"></p><button type="button" class="btn" onclick="location.reload()">Cerrar</button>';$("#cot").textContent=t}
 function pagar(j){const go=()=>{Culqi.publicKey=j.publicKey;
@@ -108,7 +105,7 @@ function pagar(j){const go=()=>{Culqi.publicKey=j.publicKey;
 cf.onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(cf));
  d.items=Object.keys(cart).map(x=>({nombre:x,n:cart[x].n}));cmsg.textContent="Enviando…";$("#cook").disabled=true;
  const k=Object.keys(cart),t=k.reduce((a,y)=>a+cart[y].n*cart[y].p,0);
- const txt=`Soy ${d.nombre} (${d.telefono}). Mi pedido:\n`+k.map(y=>`- ${cart[y].n} x ${y}`).join("\n")+`\nTotal: S/ ${t}\n${d.entrega==="delivery"?"Delivery: "+d.direccion:"Recojo en local"}`;
+ const txt=`Soy ${d.nombre}. Mi pedido:\n`+k.map(y=>`- ${cart[y].n} x ${y}`).join("\n")+`\nTotal: S/ ${t}\nRecojo en local`;
  try{const r=await fetch(API_BASE+"/api/crear-pedido",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});
   const j=await r.json().catch(()=>({}));if(!r.ok||!j.ok){if(r.status===400){cmsg.textContent=j.error||"Revisa tus datos";return}throw 0}
   if(d.metodo==="pagoefectivo")pagar(j);else yape(j,txt)}
